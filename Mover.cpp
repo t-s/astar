@@ -26,8 +26,8 @@ void Mover::solve()
 	int a = 0;
 	int b = 0;
 	int i = 0;
-	int min = 1000;
 	int pos = 0;
+	int min = 1000;
 	curPos.g_score = 0;
 	curPos.f_score = fScore();
 	
@@ -77,7 +77,8 @@ void Mover::solve()
 					case 0:
 						tempCoord = considerPos;
 						tempCoord.x = tempCoord.x - 1;
-						if(!inList(tempCoord,listClosed))
+						if(inList(tempCoord,listClosed))
+							continue;
 						{
 							temp = fScore(ax-1,ay);
 							if (temp < min)
@@ -92,7 +93,8 @@ void Mover::solve()
 					case 1:
 						tempCoord = considerPos;
 						tempCoord.y = tempCoord.y - 1;
-						if(!inList(tempCoord,listClosed))
+						if(inList(tempCoord,listClosed))
+							continue;
 						{
 							temp = fScore(ax,ay-1);
 							if ( temp < min )
@@ -107,7 +109,8 @@ void Mover::solve()
 					case 2:
 						tempCoord = considerPos;
 						tempCoord.x = tempCoord.x + 1; 
-						if(!inList(tempCoord,listClosed))
+						if(inList(tempCoord,listClosed))
+							continue;
 						{
 							temp = fScore(ax+1,ay);
 							if(temp < min)
@@ -122,7 +125,8 @@ void Mover::solve()
 					case 3:
 						tempCoord = considerPos;
 						tempCoord.y = tempCoord.y + 1;
-						if(!inList(tempCoord,listClosed))
+						if(inList(tempCoord,listClosed))
+							continue;
 						{
 							temp = fScore(ax,ay+1);
 							if(temp < min)
@@ -267,13 +271,4 @@ void Mover::printGrid()
 
     }
 
-}
-
-bool inList(coord &checkCoord, vector<coord> &checkVector)
-{
-	cout << "in function" << endl;
-	if(find(checkVector.begin(),checkVector.end(),checkCoord) != checkVector.end())
-		return true;
-	else
-		return false;
 }
