@@ -2,7 +2,8 @@
 #include <cmath>
 #include "Mover.h"
 #include "Grid.h"
-
+#include <algorithm>
+#include <vector>
 using namespace std;
 
 Mover::Mover()
@@ -19,32 +20,50 @@ void Mover::solve()
 {
 
 	coord curPos;
+	coord tempCoord;
 	curPos.x = x;
 	curPos.y = y;
 	int a = 0;
 	int b = 0;
-
+	int i = 0;
+	int min = 1000;
+	int pos = 0;
 	curPos.g_score = 0;
 	curPos.f_score = fScore();
-
-	listOpen.push_back(curPos);
 	
+	listOpen.push_back(curPos);
+
 	while (!listOpen.empty())
 	{
-	
-		cout << "Current X is: " << x << "." << endl;
-		cout << "Current Y is: " << y << "." << endl;
+		std::cout << "Current X is: " << x << "." << std::endl;
+		std::cout << "Current Y is: " << y << "." << std::endl;
 
-		cout << "Goal X is: " << this->internalGrid->getGoalX() << "." << endl;
-		cout << "Goal Y is: " << this->internalGrid->getGoalY() << "." << endl;
+		std::cout << "Goal X is: " << this->internalGrid->getGoalX() << "." << std::endl;
+		std::cout << "Goal Y is: " << this->internalGrid->getGoalY() << "." << std::endl;
 
-		listOpen.push_back(curPos);
-
-		for(a = 0; a < listOpen.size(); ++a)
+		for(i = 0; i < listOpen.size(); i++)
 		{
-			cout << "In " << a << "loop of for loop in solver." << endl;
+			if (listOpen[i].f_score < min)
+			{
+				curPos = listOpen[i];
+				min = curPos.f_score;
+				pos = i;
+				break;
+			}
+		}
 
-			coord considerPos = listOpen[a];
+		if(curPos.x == internalGrid->getGoalX() && curPos.y == internalGrid->getGoalY())
+			return;
+
+		listClosed.push_back(curPos);
+		listOpen.erase(listOpen.begin()+i);
+
+		min = 1000;
+
+		for(a = 0; a < 4; a++)
+		{
+			coord considerPos = curPos;
+
 			int ax = considerPos.x;
 			int ay = considerPos.y;
 			int newX = 0;
@@ -56,44 +75,64 @@ void Mover::solve()
 				switch(b)
 				{
 					case 0:
-						temp = fScore(ax-1,ay);
-						if (temp < min)
+						tempCoord = considerPos;
+						tempCoord.x = tempCoord.x - 1;
+						if(!inList(tempCoord,listClosed))
 						{
-							min = temp;
-							this->x = ax - 1;
-							this->y = ay;
-						}							
-						break;
+							temp = fScore(ax-1,ay);
+							if (temp < min)
+							{
+								min = temp;
+								this->x = ax - 1;
+								this->y = ay;
+							}							
+							break;
+						}
 
 					case 1:
-						temp = fScore(ax,ay-1);
-						if ( temp < min )
+						tempCoord = considerPos;
+						tempCoord.y = tempCoord.y - 1;
+						if(!inList(tempCoord,listClosed))
 						{
-							min = temp;
-							this->x = ax;
-							this->y = ay - 1;
+							temp = fScore(ax,ay-1);
+							if ( temp < min )
+							{
+								min = temp;
+								this->x = ax;
+								this->y = ay - 1;
+							}
+							break;
 						}
-						break;
 
 					case 2:
-						temp = fScore(ax+1,ay);
-						if(temp < min)
+						tempCoord = considerPos;
+						tempCoord.x = tempCoord.x + 1; 
+						if(!inList(tempCoord,listClosed))
 						{
-							min = temp;
-							this->x = ax + 1;
-							this->y = ay;
+							temp = fScore(ax+1,ay);
+							if(temp < min)
+							{
+								min = temp;
+								this->x = ax + 1;
+								this->y = ay;
+							}
+							break;
 						}
-						break;
 				
 					case 3:
-						temp = fScore(ax,ay+1);
-						if(temp < min)
+						tempCoord = considerPos;
+						tempCoord.y = tempCoord.y + 1;
+						if(!inList(tempCoord,listClosed))
 						{
-							min = temp;
-							this->x = ax;
-							this->y = ay + 1;
-						}
+							temp = fScore(ax,ay+1);
+							if(temp < min)
+							{
+								min = temp;
+								this->x = ax;
+								this->y = ay + 1;
+							}
 						break;
+						}
 				}
 			}
 		}
@@ -228,4 +267,13 @@ void Mover::printGrid()
 
     }
 
+}
+
+bool inList(coord &checkCoord, vector<coord> &checkVector)
+{
+	cout << "in function" << endl;
+	if(find(checkVector.begin(),checkVector.end(),checkCoord) != checkVector.end())
+		return true;
+	else
+		return false;
 }
