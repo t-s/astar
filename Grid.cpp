@@ -16,7 +16,6 @@ Grid::Grid()
 
 	int cornerGoal = rand()%3;
 
-
 	cells = new Cell *[length];
 	for(int i = 0; i < length; ++i)
 	{
@@ -43,15 +42,13 @@ Grid::Grid()
 
 	for(int x = 0; x < length; ++x)
 	{
-
 		for(int y = 0; y < length; ++y)
 		{
 			isThisABlock = rand()%4;
-			if (isThisABlock == 3)
-				cells[x][y].setBlock(true);
+			//if (isThisABlock == 3)
+				//cells[x][y].setBlock(true);
 			cells[x][y].setData(isThisABlock);
 		}
-
 
 	}
 
@@ -100,7 +97,6 @@ void Grid::printGrid(Mover mover)
 		std::cout << std::endl;
 
 	}
-
 
 }
 
